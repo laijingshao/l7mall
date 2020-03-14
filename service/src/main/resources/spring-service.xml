@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd 
+       http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd 
+       http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+       http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <!-- 导入dao层的spring配置-->
+    <import resource="spring-dao.xml"/>
+    <!-- 开启自动扫描-->
+    <context:component-scan base-package="com.ls.l7mall.service"></context:component-scan>
+
+    <!-- AspectJ AOP开发使用注解模式-->
+    <aop:aspectj-autoproxy/>
+
+    <!-- 事务管理使用声明式事务管理-->
+    <!--tx拦截器-->
+    <bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="database"/>
+    </bean>
+    <!-- 通知-->
+    <tx:advice id="interceptor" transaction-manager="txManager">
+        <tx:attributes>
+            <tx:method name="get*" read-only="true"/>
+            <tx:method name="find*" read-only="true"/>
+            <tx:method name="search*" read-only="true"/>
+            <tx:method name="*" propagation="REQUIRED"/>
+        </tx:attributes>
+    </tx:advice>
+    <!-- 切点-->
+    <aop:config>
+        <aop:pointcut id="pointCut" expression="execution(* com.ls.l7mall.service.*.*(..))"/>
+        <!-- 关联切点和通知-->
+        <aop:advisor advice-ref="interceptor" pointcut-ref="pointCut"/>
+    </aop:config>
+
+</beans>
