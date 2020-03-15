@@ -1,0 +1,118 @@
+package com.ls.l7mall.service.impl;
+
+import com.ls.l7mall.dao.CategoryDao;
+import com.ls.l7mall.dao.ProductDao;
+import com.ls.l7mall.entity.Category;
+import com.ls.l7mall.entity.Product;
+import com.ls.l7mall.global.ResponseCode;
+import com.ls.l7mall.global.ResponseEntity;
+import com.ls.l7mall.service.ProductService;
+import com.ls.l7mall.util.DateTimeUtil;
+import com.ls.l7mall.util.PropertiesUtil;
+import com.ls.l7mall.vo.ProductDetailVo;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+
+/**
+ * @author laijs
+ * @date 2020-3-15-19:49
+ */
+@Service("productService")
+public class ProductServiceImpl implements ProductService {
+    
+    @Autowired
+    @Qualifier("productDao")
+    private ProductDao productDao;
+    
+    @Autowired
+    @Qualifier("categoryDao")
+    private CategoryDao categoryDao;
+    
+    public ResponseEntity saveOrUpdateProduct(Product product){
+        // 判断是否为空
+        if(product == null){
+            return ResponseEntity.responesWhenError("参数有误，无法保存产品信息");
+        }
+        // 将首张子图设置为主图
+        if(!product.getSubImages().isBlank()){
+            String[] images = product.getSubImages().split(",");
+            if(images.length > 0){
+                product.setMainImage(images[0]);
+            }
+        }
+        // 新增OR更新产品
+        if(product.getId() == null){
+            // 新增
+            int resultCount = productDao.insert(product);
+            if(resultCount > 0){
+                 return ResponseEntity.responesWhenSuccess("新增产品信息成功");
+            }
+            return ResponseEntity.responesWhenError("新增产品信息失败");
+        } else {
+            // 更新
+            int rowCount = productDao.updateById(product);
+            if(rowCount > 0){
+                return ResponseEntity.responesWhenSuccess("更新产品信息成功");
+            }
+            return ResponseEntity.responesWhenError("更新产品信息失败");
+        }
+        
+    }
+    
+    public ResponseEntity<String> setSaleStatus(Integer id,Integer status){
+        if(id == null || status == null){
+            return ResponseEntity.responesWhenError(ResponseCode.ILLEGAL_ARGUMENT.getCode(),ResponseCode.ILLEGAL_ARGUMENT.getDecs());
+        }
+        Product product = new Product(id,status);
+        int rowCount = productDao.updateById(product);
+        if(rowCount > 0){
+            return ResponseEntity.responesWhenSuccess("更新产品状态成功");
+        }
+        return ResponseEntity.responesWhenError("更新产品状态失败");
+    }
+    
+    public ResponseEntity<ProductDetailVo> manageProductDetail(Integer id){
+        if(id == null){
+            return ResponseEntity.responesWhenError(ResponseCode.ILLEGAL_ARGUMENT.getCode(),ResponseCode.ILLEGAL_ARGUMENT.getDecs());
+        }
+        // 根据id获取产品
+        Product product = productDao.selectById(id);
+        if(product == null){
+            return ResponseEntity.responesWhenError("产品已下架或删除");
+        }
+        // 当响应信息和产品信息相关，但有所区分时，通过创建value object，VO类来封装数据 ——>ProductDetailVo
+        // 提供一个方法将POJO转化为VO，在此调用
+        ProductDetailVo productDetailVo = assembleProductDetailVo(product);
+        return ResponseEntity.responesWhenSuccess(productDetailVo);
+    }
+    
+    // Product ---> ProductDetailVo
+    public ProductDetailVo assembleProductDetailVo(Product product){
+        // 从POJO类中继承而来、且不需加工的属性，通过构造器赋值给VO类
+        ProductDetailVo vo = new ProductDetailVo(product.getId(), product.getCategoryId(), product.getName(), product.getSubtitle(), product.getMainImage(),
+                product.getSubImages(), product.getDetail(), product.getPrice(), product.getStock(), product.getStatus());
+        
+        // POJO中的createTime和updateTime属性，在VO类中是String，创建一个用于处理时间格式的工具类DateTimeUtil
+        String createTime = DateTimeUtil.dateToStr(product.getCreateTime());
+        String updateTime = DateTimeUtil.dateToStr(product.getUpdateTime());
+        vo.setCreateTime(createTime);
+        vo.setUpdateTime(updateTime);
+        
+        // 图片前缀imageHost属性需要在配置文件中配置
+        vo.getImageHost(PropertiesUtil.getProperty(ftp.server.http.prefix,"http://img.l7mall.com/"));
+        
+        // 父类parentCategoryId属性的设置
+        Integer categoryId = product.getCategoryId();
+        Category category = categoryDao.selectById(categoryId);
+        if(category == null){
+            vo.setParentCategoryId(0);
+        } else {
+            vo.setParentCategoryId(category.getParentId());
+        }
+        
+        return vo;
+    }
+    
+    
+}

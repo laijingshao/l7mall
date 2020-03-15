@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.4//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ls.l7mall.dao.ProductDao">
+
+    <resultMap id="resultMap" type="Product">
+        <id property="id" column="id" javaType="Integer"/>
+        <result property="categoryId" column="category_id" javaType="Integer"/>
+        <result property="name" column="name" javaType="String"/>
+        <result property="subtitle" column="subtitle" javaType="String"/>
+        <result property="mainImage" column="main_images" javaType="String"/>
+        <result property="subImages" column="sub_images" javaType="String"/>
+        <result property="detail" column="detail" javaType="String"/>
+        <result property="price" column="price" javaType="BigDecimal"/>
+        <result property="stock" column="stock" javaType="Integer"/>
+        <result property="status" column="status" javaType="Integer"/>
+        <result property="crateTime" column="crate_time" javaType="Date"/>
+        <result property="updateTime" column="update_time" javaType="Date"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id,category_id,name,subtitle,main_images,sub_images,detail,price,stock,status,create_time,update_time
+    </sql>
+    
+    <insert id="insert" parameterType="Product" useGeneratedKeys="true">
+        insert into l7mall_product (id, category_id, name, subtitle, main_image, sub_images, detail, price, stock, status, create_time, update_time) 
+        values(#{id},#{categoryId},#{name},#{subtitle},#{mainImage},#{subImages},#{detail},#{price},#{stock},#{status},now(),now())
+    </insert>
+    <update id="updateById" parameterType="Product">
+        update l7mall_product
+        <set>
+            <if test="categoryId != null">
+                category_id=#{categoryId},
+            </if>
+            <if test="name != null">
+                name=#{name},
+            </if>
+            <if test="subtitle != null">
+                subtitle=#{subtitle},
+            </if>
+            <if test="mainImage != null">
+                main_image=#{mainImage},
+            </if>
+            <if test="subImages != null">
+                sub_images=#{subImages},
+            </if>
+            <if test="detail != null">
+                detail=#{detail},
+            </if>
+            <if test="price != null">
+                price=#{price},
+            </if>
+            <if test="stock != null">
+                stock=#{stock},
+            </if>
+            <if test="status != null">
+                status=#{status},
+            </if>
+            <if test="crateTime != null">
+                create_time=#{crateTime},
+            </if>
+            <if test="updateTime != null">
+                update_time=now(),
+            </if>
+        </set>
+        where id=#{id}
+    </update>
+    <select id="selectById" parameterType="int" resultType="product">
+        select <include refid="Base_Column_List"/> 
+        from l7mall_product where id=#{id}
+    </select>
+    
+    
+</mapper>

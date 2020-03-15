@@ -4,6 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Properties;
@@ -19,9 +20,10 @@ public class PropertiesUtil {
 
     static {
         String fileName = "l7mall.properties";
-        props = new Properties();
         try {
-            props.load(new InputStreamReader(PropertiesUtil.class.getClassLoader().getResourceAsStream(fileName),"UTF-8"));
+            FileInputStream fileInputStream = new FileInputStream(fileName);
+            props = new Properties();
+            props.load(new InputStreamReader(fileInputStream,"UTF-8"));
         } catch (IOException e) {
             logger.error("配置文件读取异常",e);
         }
