@@ -10,7 +10,7 @@
     <!-- 数据源-->
     <bean id="database" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="com.mysql.cj.jdbc.Driver"/>
-        <property name="url" value="jdbc:mysql://localhost:3306/ims?useUnicode=true&amp;characterEncoding=utf-8&amp;useSSL=true&amp;useJDBCCompliantTimezoneShift=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=Hongkong"/>
+        <property name="url" value="jdbc:mysql://localhost:3306/l7mall?useUnicode=true&amp;characterEncoding=utf-8&amp;useSSL=true&amp;useJDBCCompliantTimezoneShift=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=Hongkong"/>
         <property name="username" value="root"/>
         <property name="password" value="root"/>
     </bean>
@@ -19,6 +19,13 @@
     <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
         <property name="dataSource" ref="database"/>
         <property name="typeAliasesPackage" value="com.ls.l7mall.entity"/>
+        <property name="plugins">
+            <array>
+                <bean class="com.github.pagehelper.PageInterceptor">
+                    
+                </bean>
+            </array>
+        </property>
     </bean>
 
     <!-- 映射器-->
