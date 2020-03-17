@@ -63,7 +63,7 @@
         </set>
         where id=#{id}
     </update>
-    <select id="selectById" parameterType="int" resultType="product">
+    <select id="selectById" parameterType="int" resultMap="resultMap">
         select <include refid="Base_Column_List"/> 
         from l7mall_product where id=#{id}
     </select>
@@ -71,5 +71,16 @@
         select <include refid="Base_Column_List"/>
         from l7mall_product order by id asc
     </select>
-    
+    <select id="selectByIdAndName" parameterType="map" resultMap="resultMap">
+        select <include refid="Base_Column_List"/>
+        from l7mall_product
+        <where>
+            <if test="productName != null">
+                name like #{productName}
+            </if>
+            <if test="productId != null">
+                id = #{productId}
+            </if>
+        </where>
+    </select>
 </mapper>

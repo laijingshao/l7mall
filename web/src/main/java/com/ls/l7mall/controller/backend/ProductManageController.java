@@ -98,7 +98,23 @@ public class ProductManageController {
         }
         return ResponseEntity.responesWhenError("需要管理员权限");
     }
-    
+
+    // 产品搜索功能
+    @RequestMapping("search.do")
+    @ResponseBody
+    public ResponseEntity searchProduct(HttpSession session,String productName,Integer productId, @RequestParam(value = "pageNum",defaultValue = "1") Integer pageNum, @RequestParam(value = "pageSize",defaultValue = "10") Integer pageSize){
+        // 判断是否已经登录
+        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        if(user == null){
+            return ResponseEntity.responesWhenError("尚未登录，请登录");
+        }
+        // 判断是否为管理员
+        if(user.getRole() == Const.Role.ROLE_ADMIN){
+            // 保存产品信息
+            return productService.searchProductList(productName,productId,pageNum,pageSize);
+        }
+        return ResponseEntity.responesWhenError("需要管理员权限");
+    }
     
     
 }

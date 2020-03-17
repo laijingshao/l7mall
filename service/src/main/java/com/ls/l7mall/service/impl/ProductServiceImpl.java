@@ -142,4 +142,20 @@ public class ProductServiceImpl implements ProductService {
         vo.setImageHost(PropertiesUtil.getProperty("ftp.server.http.prefix","http://image.l7mall.com/"));
         return vo;
     }
+    
+    public ResponseEntity<PageInfo> searchProductList(String productName,Integer productId,Integer pageNum,Integer pageSize){
+        Page<Object> pageHelper = PageHelper.startPage(pageNum, pageSize);
+        if(StringUtils.isNotBlank(productName)){
+            productName = new StringBuilder().append("%").append(productName).append("%").toString();
+        }
+        List<Product> products = productDao.selectByIdAndName(productName, productId);
+        ArrayList<ProductListVo> vos = new ArrayList<>();
+        for (Product product : products) {
+            ProductListVo vo = assembleProductListVo(product);
+            vos.add(vo);
+        }
+        PageInfo pageInfo = new PageInfo(products);
+        pageInfo.setList(vos);
+        return ResponseEntity.responesWhenSuccess(pageInfo);
+    }
 }

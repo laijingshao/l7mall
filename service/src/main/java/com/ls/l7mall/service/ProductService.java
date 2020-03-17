@@ -22,4 +22,7 @@ public interface ProductService {
     
     // 获取产品列表
     public ResponseEntity<PageInfo> getProductList(Integer pageNum, Integer pageSize);
+
+    // 搜索产品
+    public ResponseEntity<PageInfo> searchProductList(String productName,Integer productId,Integer pageNum,Integer pageSize);
 }
