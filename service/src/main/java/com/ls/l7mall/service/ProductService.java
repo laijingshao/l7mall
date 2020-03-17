@@ -29,5 +29,6 @@ public interface ProductService {
     // 前台获取产品详情
     public ResponseEntity<ProductDetailVo> getProductDetail(Integer productId);
     
-    
+    // 前台根据关键字和分类ID搜索产品
+    public ResponseEntity<PageInfo> searchProductListByKeyWordAndCategoryId(String keyword,Integer categoryId,Integer pageNum,Integer pageSize,String orderBy);
 }

@@ -3,6 +3,7 @@ package com.ls.l7mall.service.impl;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.google.common.collect.Lists;
 import com.ls.l7mall.dao.CategoryDao;
 import com.ls.l7mall.dao.ProductDao;
 import com.ls.l7mall.entity.Category;
@@ -10,6 +11,7 @@ import com.ls.l7mall.entity.Product;
 import com.ls.l7mall.global.Const;
 import com.ls.l7mall.global.ResponseCode;
 import com.ls.l7mall.global.ResponseEntity;
+import com.ls.l7mall.service.CategoryService;
 import com.ls.l7mall.service.ProductService;
 import com.ls.l7mall.util.DateTimeUtil;
 import com.ls.l7mall.util.PropertiesUtil;
@@ -37,6 +39,10 @@ public class ProductServiceImpl implements ProductService {
     @Autowired
     @Qualifier("categoryDao")
     private CategoryDao categoryDao;
+    
+    @Autowired
+    @Qualifier("categoryService")
+    private CategoryService categoryService;
     
     public ResponseEntity saveOrUpdateProduct(Product product){
         // 判断是否为空
@@ -175,7 +181,48 @@ public class ProductServiceImpl implements ProductService {
         ProductDetailVo productDetailVo = assembleProductDetailVo(product);
         return ResponseEntity.responesWhenSuccess(productDetailVo);
     }
-    
-    
-    
+
+    @Override
+    public ResponseEntity<PageInfo> searchProductListByKeyWordAndCategoryId(String keyword, Integer categoryId, Integer pageNum, Integer pageSize, String orderBy) {
+        if(keyword.isBlank() && categoryId == null){
+            return ResponseEntity.responesWhenError(ResponseCode.ILLEGAL_ARGUMENT.getCode(),ResponseCode.ILLEGAL_ARGUMENT.getDecs());
+        }
+        List<Integer> categoryIdList = Lists.newArrayList();
+        if(categoryId != null){
+            Category category = categoryDao.selectById(categoryId);
+            // 无该分类且关键字为空，返回空结果集
+            if(category == null && keyword.isBlank()){
+                PageHelper.startPage(pageNum, pageSize);
+                List<ProductListVo> list = Lists.newArrayList();
+                PageInfo pageInfo = new PageInfo(list);
+                return ResponseEntity.responesWhenSuccess(pageInfo);
+            }
+            // 有当前分类，递归当前分类的所有子分类
+            categoryIdList = categoryService.getDeepChildrenCategoryById(categoryId).getData();
+            
+        }
+        if(!keyword.isBlank()){
+            keyword = new StringBuilder().append("%").append(keyword).append("%").toString();
+        }
+        // 开启分页
+        PageHelper.startPage(pageNum,pageSize);
+        // 设置分页的排序
+        if(!orderBy.isBlank()){
+            String[] orderByArray = orderBy.split("_");
+            PageHelper.orderBy(orderByArray[0]+" "+orderByArray[1]);
+        }
+        // 持久层操作
+        List<Product> products = productDao.selectByNameAndCategoryIds(keyword, categoryIdList);
+        List<ProductListVo> vos = Lists.newArrayList();
+        for (Product product : products) {
+            ProductListVo vo = assembleProductListVo(product);
+            vos.add(vo);
+        }
+        PageInfo pageInfo = new PageInfo(products);
+        pageInfo.setList(vos);
+        return ResponseEntity.responesWhenSuccess(pageInfo);
+
+    }
+
+
 }

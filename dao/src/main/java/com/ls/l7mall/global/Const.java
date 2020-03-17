@@ -1,5 +1,9 @@
 package com.ls.l7mall.global;
 
+import com.google.common.collect.Sets;
+
+import java.util.Set;
+
 /**
  * @author laijs
  * @date 2020-3-14-19:39
@@ -38,5 +42,8 @@ public class Const {
         }
     }
     
-    
+    // 分页的升降序
+    public interface ProductListOrderBy{
+        Set<String> PRICE_ASC_DESC = Sets.newHashSet("price_desc","price_asc");
+    }
 }

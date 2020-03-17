@@ -17,4 +17,5 @@ public interface ProductDao {
     public Product selectById(Integer productId);
     public List<Product> selectAll();
     public List<Product> selectByIdAndName(@Param("productName") String productName, @Param("productId") Integer productId);
+    public List<Product> selectByNameAndCategoryIds(@Param("productName") String productName, @Param("categoryIdList")List<Integer> categoryIdList);
 }

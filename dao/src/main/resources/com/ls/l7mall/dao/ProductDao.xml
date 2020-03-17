@@ -83,4 +83,17 @@
             </if>
         </where>
     </select>
+    <select id="selectByNameAndCategoryIds" resultMap="resultMap" parameterType="map">
+        select <include refid="Base_Column_List"/>
+        from l7mall_product where status = 1
+        <if test="productName != null">
+            and name like #{productName}
+        </if>
+        <if test="categoryIdList != null">
+            and category_id in 
+            <foreach collection="categoryIdList" item="categoryId" open="(" separator="," close=")">
+                #{categoryId}
+            </foreach>
+        </if>
+    </select>
 </mapper>
