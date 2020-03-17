@@ -22,8 +22,7 @@ public class PropertiesUtil {
         String fileName = "l7mall.properties";
         props = new Properties();
         try {
-            FileInputStream fileInputStream = new FileInputStream(fileName);
-            props.load(new InputStreamReader(fileInputStream,"UTF-8"));
+            props.load(new InputStreamReader(PropertiesUtil.class.getClassLoader().getResourceAsStream(fileName),"UTF-8"));
         } catch (IOException e) {
             logger.error("配置文件读取异常",e);
         }

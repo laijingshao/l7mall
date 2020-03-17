@@ -1,19 +1,27 @@
 package com.ls.l7mall.controller.backend;
 
+import com.google.common.collect.Maps;
 import com.ls.l7mall.entity.Product;
 import com.ls.l7mall.entity.User;
 import com.ls.l7mall.global.Const;
 import com.ls.l7mall.global.ResponseEntity;
 import com.ls.l7mall.service.CategoryService;
+import com.ls.l7mall.service.FileService;
 import com.ls.l7mall.service.ProductService;
+import com.ls.l7mall.util.PropertiesUtil;
 import com.ls.l7mall.vo.ProductDetailVo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.HashMap;
 
 /**
  * @author laijs
@@ -28,6 +36,11 @@ public class ProductManageController {
     
     @Autowired
     private CategoryService categoryService;
+    
+    @Autowired
+    private FileService fileService;
+
+    private Logger logger = LoggerFactory.getLogger(ProductManageController.class);
     
     // 添加OR更新产品
     @RequestMapping("save.do")
@@ -75,7 +88,7 @@ public class ProductManageController {
         }
         // 判断是否为管理员
         if(user.getRole() == Const.Role.ROLE_ADMIN){
-            // 保存产品信息
+            // 获取产品详细信息
             return productService.manageProductDetail(id);
         }
         return ResponseEntity.responesWhenError("需要管理员权限");
@@ -93,7 +106,7 @@ public class ProductManageController {
         }
         // 判断是否为管理员
         if(user.getRole() == Const.Role.ROLE_ADMIN){
-            // 保存产品信息
+            // 获取产品列表
             return productService.getProductList(pageNum,pageSize);
         }
         return ResponseEntity.responesWhenError("需要管理员权限");
@@ -110,11 +123,36 @@ public class ProductManageController {
         }
         // 判断是否为管理员
         if(user.getRole() == Const.Role.ROLE_ADMIN){
-            // 保存产品信息
+            // 搜索产品信息
             return productService.searchProductList(productName,productId,pageNum,pageSize);
         }
         return ResponseEntity.responesWhenError("需要管理员权限");
     }
     
+    //  图片上传
+    @RequestMapping("upload.do")
+    @ResponseBody
+    public ResponseEntity upload(HttpSession session, @RequestParam(value = "upload_file",required = false) MultipartFile multipartFile, HttpServletRequest request){
+        // 判断是否已经登录
+        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        if(user == null){
+            return ResponseEntity.responesWhenError("尚未登录，请登录");
+        }
+        // 判断是否为管理员
+        if(user.getRole() == Const.Role.ROLE_ADMIN){
+            // 获取路径
+            String path = request.getServletContext().getRealPath("upload");
+            // 上传图片
+            String targetFileName = fileService.upload(multipartFile, path);
+            String url = PropertiesUtil.getProperty("ftp.server.http.prefix", "http://image.l7mall.com/") + targetFileName;
+
+            HashMap<String, String> map = Maps.newHashMap();
+            map.put("uri",targetFileName);
+            map.put("url",url);
+
+            return ResponseEntity.responesWhenSuccess(map);
+        }
+        return ResponseEntity.responesWhenError("需要管理员权限");
+    }
     
 }
