@@ -10,6 +10,7 @@ import com.ls.l7mall.service.FileService;
 import com.ls.l7mall.service.ProductService;
 import com.ls.l7mall.util.PropertiesUtil;
 import com.ls.l7mall.vo.ProductDetailVo;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +21,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author laijs
@@ -144,8 +147,10 @@ public class ProductManageController {
             String path = request.getServletContext().getRealPath("upload");
             // 上传图片
             String targetFileName = fileService.upload(multipartFile, path);
+            if(StringUtils.isBlank(targetFileName)){
+                return ResponseEntity.responesWhenError("上传文件失败");
+            }
             String url = PropertiesUtil.getProperty("ftp.server.http.prefix", "http://image.l7mall.com/") + targetFileName;
-
             HashMap<String, String> map = Maps.newHashMap();
             map.put("uri",targetFileName);
             map.put("url",url);
@@ -153,6 +158,42 @@ public class ProductManageController {
             return ResponseEntity.responesWhenSuccess(map);
         }
         return ResponseEntity.responesWhenError("需要管理员权限");
+    }
+    
+    // 富文本上传
+    @RequestMapping("richtext_img_upload.do")
+    @ResponseBody
+    public Map richtextImgUpload(HttpSession session, @RequestParam(value = "upload_file",required = false) MultipartFile multipartFile, HttpServletRequest request, HttpServletResponse response){
+        HashMap resultMap = Maps.newHashMap();
+        // 判断是否已经登录
+        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        if(user == null){
+            resultMap.put("success",false);
+            resultMap.put("msg","尚未登录，请登录");
+            return resultMap;
+        }
+        // 判断是否为管理员
+        if(user.getRole() == Const.Role.ROLE_ADMIN){
+            // 获取路径
+            String path = request.getServletContext().getRealPath("upload");
+            // 上传图片
+            String targetFileName = fileService.upload(multipartFile, path);
+            if(StringUtils.isBlank(targetFileName)){
+                resultMap.put("success",false);
+                resultMap.put("msg","上传文件失败");
+                return resultMap;
+            }
+            String url = PropertiesUtil.getProperty("ftp.server.http.prefix", "http://image.l7mall.com/") + targetFileName;
+            resultMap.put("success",true);
+            resultMap.put("msg","上传成功");
+            resultMap.put("file_path",url);
+            response.addHeader("Access-Control-Allow-Headers","X-File-Name");
+            return resultMap;
+
+        }
+        resultMap.put("success",false);
+        resultMap.put("msg","需要管理员权限");
+        return resultMap;
     }
     
 }
