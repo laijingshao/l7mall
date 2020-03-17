@@ -14,7 +14,7 @@ import java.util.List;
 public interface ProductDao {
     public int insert(Product product);
     public int updateById(Product product);
-    public Product selectById(Integer id);
+    public Product selectById(Integer productId);
     public List<Product> selectAll();
     public List<Product> selectByIdAndName(@Param("productName") String productName, @Param("productId") Integer productId);
 }

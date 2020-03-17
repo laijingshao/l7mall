@@ -65,7 +65,7 @@
     </update>
     <select id="selectById" parameterType="int" resultMap="resultMap">
         select <include refid="Base_Column_List"/> 
-        from l7mall_product where id=#{id}
+        from l7mall_product where id=#{productId}
     </select>
     <select id="selectAll" resultMap="resultMap">
         select <include refid="Base_Column_List"/>

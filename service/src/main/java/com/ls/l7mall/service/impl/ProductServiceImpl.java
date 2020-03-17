@@ -7,6 +7,7 @@ import com.ls.l7mall.dao.CategoryDao;
 import com.ls.l7mall.dao.ProductDao;
 import com.ls.l7mall.entity.Category;
 import com.ls.l7mall.entity.Product;
+import com.ls.l7mall.global.Const;
 import com.ls.l7mall.global.ResponseCode;
 import com.ls.l7mall.global.ResponseEntity;
 import com.ls.l7mall.service.ProductService;
@@ -80,12 +81,12 @@ public class ProductServiceImpl implements ProductService {
         return ResponseEntity.responesWhenError("更新产品状态失败");
     }
     
-    public ResponseEntity<ProductDetailVo> manageProductDetail(Integer id){
-        if(id == null){
+    public ResponseEntity<ProductDetailVo> manageProductDetail(Integer productId){
+        if(productId == null){
             return ResponseEntity.responesWhenError(ResponseCode.ILLEGAL_ARGUMENT.getCode(),ResponseCode.ILLEGAL_ARGUMENT.getDecs());
         }
         // 根据id获取产品
-        Product product = productDao.selectById(id);
+        Product product = productDao.selectById(productId);
         if(product == null){
             return ResponseEntity.responesWhenError("产品已下架或删除");
         }
@@ -158,4 +159,23 @@ public class ProductServiceImpl implements ProductService {
         pageInfo.setList(vos);
         return ResponseEntity.responesWhenSuccess(pageInfo);
     }
+
+    public ResponseEntity<ProductDetailVo> getProductDetail(Integer productId){
+        if(productId == null){
+            return ResponseEntity.responesWhenError(ResponseCode.ILLEGAL_ARGUMENT.getCode(),ResponseCode.ILLEGAL_ARGUMENT.getDecs());
+        }
+        // 根据id获取产品
+        Product product = productDao.selectById(productId);
+        if(product == null){
+            return ResponseEntity.responesWhenError("产品已下架或删除");
+        }
+        if(product.getStatus() != Const.ProductStatus.ON_SALE.getCode()){
+            return ResponseEntity.responesWhenError("产品已下架或删除");
+        }
+        ProductDetailVo productDetailVo = assembleProductDetailVo(product);
+        return ResponseEntity.responesWhenSuccess(productDetailVo);
+    }
+    
+    
+    
 }

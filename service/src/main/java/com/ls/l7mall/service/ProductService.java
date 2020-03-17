@@ -18,11 +18,16 @@ public interface ProductService {
     public ResponseEntity<String> setSaleStatus(Integer productId,Integer status);
     
     // 获取产品详情
-    public ResponseEntity<ProductDetailVo> manageProductDetail(Integer id);
+    public ResponseEntity<ProductDetailVo> manageProductDetail(Integer productId);
     
     // 获取产品列表
     public ResponseEntity<PageInfo> getProductList(Integer pageNum, Integer pageSize);
 
     // 搜索产品
     public ResponseEntity<PageInfo> searchProductList(String productName,Integer productId,Integer pageNum,Integer pageSize);
+    
+    // 前台获取产品详情
+    public ResponseEntity<ProductDetailVo> getProductDetail(Integer productId);
+    
+    
 }

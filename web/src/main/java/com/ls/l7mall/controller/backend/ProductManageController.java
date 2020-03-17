@@ -83,7 +83,7 @@ public class ProductManageController {
     // 获取产品详细信息
     @RequestMapping("detail.do")
     @ResponseBody
-    public ResponseEntity<ProductDetailVo> getDetail(HttpSession session, Integer id){
+    public ResponseEntity<ProductDetailVo> getDetail(HttpSession session, Integer productId){
         // 判断是否已经登录
         User user = (User) session.getAttribute(Const.CURRENT_USER);
         if(user == null){
@@ -92,7 +92,7 @@ public class ProductManageController {
         // 判断是否为管理员
         if(user.getRole() == Const.Role.ROLE_ADMIN){
             // 获取产品详细信息
-            return productService.manageProductDetail(id);
+            return productService.manageProductDetail(productId);
         }
         return ResponseEntity.responesWhenError("需要管理员权限");
     }
