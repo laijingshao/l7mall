@@ -1,5 +1,6 @@
 package com.ls.l7mall.service;
 
+import com.github.pagehelper.PageInfo;
 import com.ls.l7mall.entity.Product;
 import com.ls.l7mall.global.ResponseEntity;
 import com.ls.l7mall.vo.ProductDetailVo;
@@ -18,4 +19,7 @@ public interface ProductService {
     
     // 获取产品详情
     public ResponseEntity<ProductDetailVo> manageProductDetail(Integer id);
+    
+    // 获取产品列表
+    public ResponseEntity<PageInfo> getProductList(Integer pageNum, Integer pageSize);
 }

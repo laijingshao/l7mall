@@ -1,5 +1,8 @@
 package com.ls.l7mall.service.impl;
 
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.ls.l7mall.dao.CategoryDao;
 import com.ls.l7mall.dao.ProductDao;
 import com.ls.l7mall.entity.Category;
@@ -10,10 +13,14 @@ import com.ls.l7mall.service.ProductService;
 import com.ls.l7mall.util.DateTimeUtil;
 import com.ls.l7mall.util.PropertiesUtil;
 import com.ls.l7mall.vo.ProductDetailVo;
+import com.ls.l7mall.vo.ProductListVo;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author laijs
@@ -101,7 +108,7 @@ public class ProductServiceImpl implements ProductService {
         vo.setUpdateTime(updateTime);
         
         // 图片前缀imageHost属性需要在配置文件中配置
-        vo.setImageHost(PropertiesUtil.getProperty("ftp.server.http.prefix","http://img.l7mall.com/"));
+        vo.setImageHost(PropertiesUtil.getProperty("ftp.server.http.prefix","http://image.l7mall.com/"));
         
         // 父类parentCategoryId属性的设置
         Integer categoryId = product.getCategoryId();
@@ -115,5 +122,24 @@ public class ProductServiceImpl implements ProductService {
         return vo;
     }
     
+    public ResponseEntity<PageInfo> getProductList(Integer pageNum,Integer pageSize){
+        Page<Object> pageHelper = PageHelper.startPage(pageNum, pageSize);
+        List<Product> products = productDao.selectAll();
+        ArrayList<ProductListVo> vos = new ArrayList<>();
+        for (Product product : products) {
+            ProductListVo vo = assembleProductListVo(product);
+            vos.add(vo);
+        }
+        PageInfo pageInfo = new PageInfo(products);
+        pageInfo.setList(vos);
+        return ResponseEntity.responesWhenSuccess(pageInfo);
+
+    }
     
+    // product  ---> ProductListVo
+    public ProductListVo assembleProductListVo(Product product){
+        ProductListVo vo = new ProductListVo(product.getId(), product.getCategoryId(), product.getName(), product.getSubtitle(), product.getMainImage(), product.getPrice(), product.getStatus());
+        vo.setImageHost(PropertiesUtil.getProperty("ftp.server.http.prefix","http://image.l7mall.com/"));
+        return vo;
+    }
 }

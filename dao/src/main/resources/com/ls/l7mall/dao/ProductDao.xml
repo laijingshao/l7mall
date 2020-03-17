@@ -67,6 +67,9 @@
         select <include refid="Base_Column_List"/> 
         from l7mall_product where id=#{id}
     </select>
-    
+    <select id="selectAll" resultMap="resultMap">
+        select <include refid="Base_Column_List"/>
+        from l7mall_product order by id asc
+    </select>
     
 </mapper>
