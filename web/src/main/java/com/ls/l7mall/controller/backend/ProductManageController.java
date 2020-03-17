@@ -6,10 +6,10 @@ import com.ls.l7mall.global.Const;
 import com.ls.l7mall.global.ResponseEntity;
 import com.ls.l7mall.service.CategoryService;
 import com.ls.l7mall.service.ProductService;
+import com.ls.l7mall.vo.ProductDetailVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpSession;
@@ -48,7 +48,7 @@ public class ProductManageController {
     // 修改产品状态
     @RequestMapping("set_sale_status.do")
     @ResponseBody
-    public ResponseEntity<String> setSaleStatus(HttpSession session, Integer id,Integer status){
+    public ResponseEntity<String> setSaleStatus(HttpSession session, Integer productId,Integer status){
         // 判断是否已经登录
         User user = (User) session.getAttribute(Const.CURRENT_USER);
         if(user == null){
@@ -57,7 +57,7 @@ public class ProductManageController {
         // 判断是否为管理员
         if(user.getRole() == Const.Role.ROLE_ADMIN){
             // 保存产品信息
-            return productService.setSaleStatus(id,status);
+            return productService.setSaleStatus(productId,status);
         }
         return ResponseEntity.responesWhenError("需要管理员权限");
     
@@ -66,7 +66,7 @@ public class ProductManageController {
     // 获取产品详细信息
     @RequestMapping("detail.do")
     @ResponseBody
-    public ResponseEntity<String> getDetail(HttpSession session, Integer id){
+    public ResponseEntity<ProductDetailVo> getDetail(HttpSession session, Integer id){
         // 判断是否已经登录
         User user = (User) session.getAttribute(Const.CURRENT_USER);
         if(user == null){
@@ -75,10 +75,9 @@ public class ProductManageController {
         // 判断是否为管理员
         if(user.getRole() == Const.Role.ROLE_ADMIN){
             // 保存产品信息
-//            return productService.manageProductDetail(id);
+            return productService.manageProductDetail(id);
         }
         return ResponseEntity.responesWhenError("需要管理员权限");
-
     }
     
     

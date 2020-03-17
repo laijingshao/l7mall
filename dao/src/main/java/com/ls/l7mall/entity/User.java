@@ -15,10 +15,10 @@ public class User {
     private String question;
     private String answer;
     private Integer role;
-    private Date crateTime;
+    private Date createTime;
     private Date updateTime;
 
-    public User(Integer id, String username, String password, String phone, String email, String question, String answer, Integer role, Date crateTime, Date updateTime) {
+    public User(Integer id, String username, String password, String phone, String email, String question, String answer, Integer role, Date createTime, Date updateTime) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -27,7 +27,7 @@ public class User {
         this.question = question;
         this.answer = answer;
         this.role = role;
-        this.crateTime = crateTime;
+        this.createTime = createTime;
         this.updateTime = updateTime;
     }
 
@@ -98,12 +98,12 @@ public class User {
         this.role = role;
     }
 
-    public Date getCrateTime() {
-        return crateTime;
+    public Date getCreateTime() {
+        return createTime;
     }
 
-    public void setCrateTime(Date crateTime) {
-        this.crateTime = crateTime;
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
     }
 
     public Date getUpdateTime() {

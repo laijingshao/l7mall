@@ -10,6 +10,7 @@ import com.ls.l7mall.service.ProductService;
 import com.ls.l7mall.util.DateTimeUtil;
 import com.ls.l7mall.util.PropertiesUtil;
 import com.ls.l7mall.vo.ProductDetailVo;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -35,7 +36,7 @@ public class ProductServiceImpl implements ProductService {
             return ResponseEntity.responesWhenError("参数有误，无法保存产品信息");
         }
         // 将首张子图设置为主图
-        if(!product.getSubImages().isBlank()){
+        if(StringUtils.isNotBlank(product.getSubImages())){
             String[] images = product.getSubImages().split(",");
             if(images.length > 0){
                 product.setMainImage(images[0]);
@@ -60,11 +61,11 @@ public class ProductServiceImpl implements ProductService {
         
     }
     
-    public ResponseEntity<String> setSaleStatus(Integer id,Integer status){
-        if(id == null || status == null){
+    public ResponseEntity<String> setSaleStatus(Integer productId,Integer status){
+        if(productId == null || status == null){
             return ResponseEntity.responesWhenError(ResponseCode.ILLEGAL_ARGUMENT.getCode(),ResponseCode.ILLEGAL_ARGUMENT.getDecs());
         }
-        Product product = new Product(id,status);
+        Product product = new Product(productId,status);
         int rowCount = productDao.updateById(product);
         if(rowCount > 0){
             return ResponseEntity.responesWhenSuccess("更新产品状态成功");
@@ -100,7 +101,7 @@ public class ProductServiceImpl implements ProductService {
         vo.setUpdateTime(updateTime);
         
         // 图片前缀imageHost属性需要在配置文件中配置
-        vo.getImageHost(PropertiesUtil.getProperty(ftp.server.http.prefix,"http://img.l7mall.com/"));
+        vo.setImageHost(PropertiesUtil.getProperty("ftp.server.http.prefix","http://img.l7mall.com/"));
         
         // 父类parentCategoryId属性的设置
         Integer categoryId = product.getCategoryId();

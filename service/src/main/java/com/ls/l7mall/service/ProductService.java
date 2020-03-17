@@ -14,7 +14,7 @@ public interface ProductService {
     public ResponseEntity saveOrUpdateProduct(Product product);
 
     // 更新产品状态
-    public ResponseEntity<String> setSaleStatus(Integer id,Integer status);
+    public ResponseEntity<String> setSaleStatus(Integer productId,Integer status);
     
     // 获取产品详情
     public ResponseEntity<ProductDetailVo> manageProductDetail(Integer id);
