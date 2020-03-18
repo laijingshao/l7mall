@@ -17,4 +17,7 @@ public interface CartDao {
     public int getAllCheckedByUserId(Integer userId);
     public Cart selectByUserIdAndProductId(@Param("userId") Integer userId, @Param("productId") Integer productId);
     public int insert(Cart cart);
+    public int deleteByUserIdAndProductIds(@Param("userId") Integer userId, @Param("productIds") List<String> productIds);
+    public int updateCheckedByUserId(@Param("userId") Integer userId, @Param("productId")Integer productId,@Param("checked")Integer checked);
+    public int getCartProductCount(@Param("userId") Integer userId);
 }

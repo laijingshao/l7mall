@@ -54,4 +54,22 @@
     <insert id="insert" parameterType="Cart" useGeneratedKeys="true">
         insert into l7mall_cart values(#{id},#{userId},#{productId},#{quantity},#{checked},now(),now())
     </insert>
+    <delete id="deleteByUserIdAndProductIds" parameterType="map">
+        delete from l7mall_cart where user_id=#{userId}
+        <if test="productIds != null">
+            and product_id in 
+            <foreach collection="productIds" index="index" item="productId" open="(" separator="," close=")">
+                #{productId}
+            </foreach>
+        </if>
+    </delete>
+    <update id="updateCheckedByUserId" parameterType="map">
+        update l7mall_cart set checked = #{checked},update_time = now() where user_id = #{userId} 
+        <if test="productId != null">
+            and product_id = #{productId}
+        </if>
+    </update>
+    <select id="getCartProductCount" parameterType="int" resultType="int">
+        select IFNULL(sum(quantity),0) as count from l7mall_cart where user_id = #{userId}
+    </select>
 </mapper>

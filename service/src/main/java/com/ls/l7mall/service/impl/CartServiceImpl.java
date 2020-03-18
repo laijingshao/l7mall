@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -132,5 +133,42 @@ public class CartServiceImpl implements CartService {
         return this.list(userId);
     }
     
+    // update.do业务方法
+    public ResponseEntity<CartVo> update(Integer userId,Integer productId,Integer count){
+        if(productId == null || count == null){
+            return ResponseEntity.responesWhenError(ResponseCode.ILLEGAL_ARGUMENT.getCode(),ResponseCode.ILLEGAL_ARGUMENT.getDecs());
+        }
+        Cart cart = cartDao.selectByUserIdAndProductId(userId, productId);
+        if(cart != null) {
+            cart.setQuantity(count);
+            cartDao.updateByPrimaryKeySelective(cart);
+        }
+        return this.list(userId);
+    }
+
+    // delete_product.do业务方法
+    public ResponseEntity<CartVo> deleteProduct(Integer userId,String productIds){
+        List<String> ids = Arrays.asList(productIds.split(","));
+        if(ids.isEmpty()){
+           return  ResponseEntity.responesWhenError(ResponseCode.ILLEGAL_ARGUMENT.getCode(),ResponseCode.ILLEGAL_ARGUMENT.getDecs()); 
+        }
+        cartDao.deleteByUserIdAndProductIds(userId,ids);
+        return this.list(userId);
+    }
+    
+    // 单选或者取消单选
+    public ResponseEntity<CartVo> selectOrUnselect(Integer userId,Integer productId,Integer checked){
+        cartDao.updateCheckedByUserId(userId,productId,checked);
+        return this.list(userId);
+    }
+    
+    // 查询购物车中产品的数量
+    public ResponseEntity<Integer> getCartProductCount(Integer userId){
+        if(userId == null){
+            return  ResponseEntity.responesWhenSuccess(0);
+        }
+        int count = cartDao.getCartProductCount(userId);
+        return  ResponseEntity.responesWhenSuccess(count);
+    }
     
 }
