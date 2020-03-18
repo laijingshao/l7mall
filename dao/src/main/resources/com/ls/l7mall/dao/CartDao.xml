@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.4//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ls.l7mall.dao.CartDao">
+
+    <resultMap id="resultMap" type="Cart">
+        <id column="id" property="id" javaType="Integer"/>
+        <result column="user_id" property="userId" javaType="Integer"/>
+        <result column="product_id" property="productId" javaType="Integer"/>
+        <result column="quantity" property="quantity" javaType="Integer"/>
+        <result column="checked" property="checked" javaType="Integer"/>
+        <result column="create_time" property="createTime" javaType="Date"/>
+        <result column="update_time" property="updateTime" javaType="Date"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,user_id,product_id,quantity,checked,create_time,update_time
+    </sql>
+    
+    <select id="selectCartByUserId" parameterType="int" resultMap="resultMap">
+        select <include refid="Base_Column_List"/>
+        from l7mall_cart where user_id = #{userId}
+    </select>
+    <update id="updateByPrimaryKeySelective" parameterType="Cart">
+        update l7mall_cart
+        <set >
+            <if test="userId != null" >
+                user_id = #{userId},
+            </if>
+            <if test="productId != null" >
+                product_id = #{productId},
+            </if>
+            <if test="quantity != null" >
+                quantity = #{quantity},
+            </if>
+            <if test="checked != null" >
+                checked = #{checked},
+            </if>
+            <if test="createTime != null" >
+                create_time = #{createTime},
+            </if>
+            <if test="updateTime != null" >
+                update_time = now(),
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+    <select id="getAllCheckedByUserId" parameterType="int" resultType="int">
+        select count(1) from l7mall_cart where user_id=#{userId} and checked = 0
+    </select>
+    <select id="selectByUserIdAndProductId" parameterType="map" resultMap="resultMap">
+        select <include refid="Base_Column_List"/>
+        from l7mall_cart where user_id=#{userId} and product_id=#{productId}
+    </select>
+    <insert id="insert" parameterType="Cart" useGeneratedKeys="true">
+        insert into l7mall_cart values(#{id},#{userId},#{productId},#{quantity},#{checked},now(),now())
+    </insert>
+</mapper>
