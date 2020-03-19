@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.4//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ls.l7mall.dao.ShippingDao">
+
+    <resultMap id="resultMap" type="Shipping">
+        <id property="id" column="id" javaType="Integer"/>
+        <result property="userId" column="user_id" javaType="Integer"/>
+        <result property="receiverName" column="receiver_name" javaType="String"/>
+        <result property="receiverPhone" column="receiver_phone" javaType="String"/>
+        <result property="receiverMobile" column="receiver_mobile" javaType="String"/>
+        <result property="receiverProvince" column="receiver_province" javaType="String"/>
+        <result property="receiverCity" column="receiver_city" javaType="String"/>
+        <result property="receiverDistrict" column="receiver_district" javaType="String"/>
+        <result property="receiverAddress" column="receiver_address" javaType="String"/>
+        <result property="receiverZip" column="receiver_zip" javaType="String"/>
+        <result property="createTime" column="create_time" javaType="Date"/>
+        <result property="updateTime" column="update_time" javaType="Date"/>
+    </resultMap>
+
+    <sql id="Base_Column_List" >
+        id, user_id, receiver_name, receiver_phone, receiver_mobile, receiver_province, receiver_city, receiver_district, receiver_address,receiver_zip,create_time, update_time
+     </sql>
+
+    <insert id="insert" parameterType="Shipping" useGeneratedKeys="true" keyProperty="id">
+        insert into l7mall_shipping
+        values (#{id},#{userId},#{receiverName},#{receiverPhone},#{receiverMobile},#{receiverProvince},#{receiverCity},#{receiverDistrict},#{receiverAddress},#{receiverZip},now(),now())
+    </insert>
+    <delete id="deleteByIdAndUserId" parameterType="map">
+        delete from l7mall_shipping where user_id=#{userId} and id = #{shippingId}
+    </delete>
+    <update id="updateByShipping" parameterType="Shipping">
+        update l7mall_shipping set 
+        receiver_name = #{receiverName},receiver_phone = #{receiverPhone},receiver_mobile = #{receiverMobile},
+        receiver_province = #{receiverProvince},receiver_city = #{receiverCity},receiver_district = #{receiverDistrict},
+        receiver_address = #{receiverAddress},receiver_zip = #{receiverZip},create_time = #{createTime},update_time=now()
+        where user_id = #{userId} and id = #{id}
+    </update>
+    <select id="selectByIdAndUserId" parameterType="map" resultMap="resultMap">
+        select <include refid="Base_Column_List"/> from l7mall_shipping
+        where user_id=#{userId} and id = #{shippingId}
+    </select>
+    <select id="selectById" parameterType="int" resultMap="resultMap">
+        select <include refid="Base_Column_List"/> from l7mall_shipping where user_id=#{userId} 
+    </select>
+    
+</mapper>
