@@ -27,6 +27,10 @@
                 <configuration>
                     <target>1.12</target>
                     <source>1.12</source>
+                    <encoding>UTF-8</encoding>
+                    <compilerArguments>
+                        <extdirs>${project.basedir}/src/main/webapp/WEB-INF/lib</extdirs>
+                    </compilerArguments>
                 </configuration>
             </plugin>
         </plugins>

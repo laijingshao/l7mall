@@ -55,4 +55,66 @@ public class Const {
         String LIMIT_NUM_FAIL = "LIMIT_NUM_FAIL";       // 库存充足
         String LIMIT_NUM_SUCCESS = "LIMIT_NUM_SUCCESS"; // 库存不足
     }
+    
+    // 订单状态
+    public enum OrderStatus{
+        CANCELED(0,"已取消"),
+        NO_PAY(10,"未支付"),
+        PAID(20,"已付款"),
+        SHIPPED(40,"已发货"),
+        ORDER_SUCCESS(50,"订单完成"),
+        ORDER_CLOSE(60,"订单关闭");
+
+        private Integer code;
+        private String value;
+
+        OrderStatus(Integer code, String value) {
+            this.code = code;
+            this.value = value;
+        }
+
+        public Integer getCode() {
+            return code;
+        }
+
+        public String getValue() {
+            return value;
+        }
+    }
+    
+    // 交易状态(用于和支付宝回调的交易状态比较，从支付宝文档中获取)
+    public interface TradeStatus{
+        String TRADE_STATUS_WAIT_BUYER_PAY = "WAIT_BUYER_PAY";
+        String TRADE_STATUS_TRADE_SUCCESS = "TRADE_SUCCESS";
+    }
+    
+    // 交易平台
+    public enum payPlatformEnum{
+        ALIPAY(1,"支付宝"),
+        WECHATPAY(0,"微信");
+
+        public Integer getCode() {
+            return code;
+        }
+
+        public String getValue() {
+            return value;
+        }
+
+        payPlatformEnum(Integer code, String value) {
+            this.code = code;
+            this.value = value;
+        }
+
+        private Integer code;
+        private String value;
+        
+    }
+    
+    // 支付宝回调的处理结果
+    public interface AlipayCallback{
+        String RESPONSE_SUCCESS = "success";
+        String RESPONSE_FAILED = "failed";
+    }
+    
 }
