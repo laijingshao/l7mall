@@ -17,5 +17,6 @@ public interface ShippingDao {
     public int deleteByIdAndUserId(@Param("userId") Integer userId,@Param("shippingId") Integer shippingId);
     public int updateByShipping(Shipping shipping);
     public Shipping selectByIdAndUserId(@Param("userId") Integer userId,@Param("shippingId") Integer shippingId);
-    public List<Shipping> selectById(Integer userId);
+    public List<Shipping> selectByUserId(Integer userId);
+    public Shipping selectById(Integer shippingId);
 }

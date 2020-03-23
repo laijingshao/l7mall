@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
@@ -34,6 +35,66 @@ public class OrderController {
     @Autowired
     private OrderService orderService;
 
+    // 创建订单
+    @RequestMapping("create.do")
+    @ResponseBody
+    public ResponseEntity create(HttpSession session, Integer shippingId) {
+        // 判断是否已经登录
+        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        if (user == null) {
+            return ResponseEntity.responesWhenError("尚未登录，请登录");
+        }
+        return orderService.createOrder(user.getId(), shippingId);
+    }
+    
+    // 获取订单的商品信息
+    @RequestMapping("get_order_cart_product.do")
+    @ResponseBody
+    public ResponseEntity getOrderCartProduct(HttpSession session) {
+        // 判断是否已经登录
+        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        if (user == null) {
+            return ResponseEntity.responesWhenError("尚未登录，请登录");
+        }
+        return orderService.getOrderCartProduct(user.getId());
+    }
+    
+    // 取消订单
+    @RequestMapping("cancel.do")
+    @ResponseBody
+    public ResponseEntity cancel(HttpSession session,Long orderNo) {
+        // 判断是否已经登录
+        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        if (user == null) {
+            return ResponseEntity.responesWhenError("尚未登录，请登录");
+        }
+        return orderService.cancelOrder(user.getId(),orderNo);
+    }
+    
+    //订单列表
+    @RequestMapping("list.do")
+    @ResponseBody
+    public ResponseEntity list(HttpSession session, @RequestParam(value = "pageNum",defaultValue = "1") Integer pageNum,@RequestParam(value = "pageSize",defaultValue = "10") Integer pageSize) {
+        // 判断是否已经登录
+        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        if (user == null) {
+            return ResponseEntity.responesWhenError("尚未登录，请登录");
+        }
+        return orderService.listOrder(user.getId(),pageNum,pageSize);
+    }
+
+    //订单列表
+    @RequestMapping("detail.do")
+    @ResponseBody
+    public ResponseEntity detail(HttpSession session, Long orderNo) {
+        // 判断是否已经登录
+        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        if (user == null) {
+            return ResponseEntity.responesWhenError("尚未登录，请登录");
+        }
+        return orderService.orderDetail(user.getId(),orderNo);
+    }
+    
     // 扫码支付
     @RequestMapping("pay.do")
     @ResponseBody
@@ -107,6 +168,7 @@ public class OrderController {
         }
         return ResponseEntity.responesWhenSuccess(false);
     }
+    
     
     
     

@@ -1,15 +1,13 @@
-package com.ls.l7mall.entity;
+package com.ls.l7mall.vo;
 
 import java.math.BigDecimal;
-import java.util.Date;
 
 /**
  * @author laijs
- * @date 2020-3-20-14:36
+ * @date 2020-3-23-12:16
  */
-public class OrderItem {
-    private Integer id;
-    private Integer userId;
+public class OrderItemVo {
+    
     private Long orderNo;
     private Integer productId;
     private String productName;
@@ -17,33 +15,20 @@ public class OrderItem {
     private BigDecimal currentUnitPrice;
     private Integer quantity;
     private BigDecimal totalPrice;
-    private Date createTime;
-    private Date updateTime;
+    private String createTime;
 
-    public OrderItem(Integer userId, Integer productId, String productName, String productImage, BigDecimal currentUnitPrice, Integer quantity, BigDecimal totalPrice) {
-        this.userId = userId;
+    public OrderItemVo() {
+    }
+
+    public OrderItemVo(Long orderNo, Integer productId, String productName, String productImage, BigDecimal currentUnitPrice, Integer quantity, BigDecimal totalPrice, String createTime) {
+        this.orderNo = orderNo;
         this.productId = productId;
         this.productName = productName;
         this.productImage = productImage;
         this.currentUnitPrice = currentUnitPrice;
         this.quantity = quantity;
         this.totalPrice = totalPrice;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Integer getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Integer userId) {
-        this.userId = userId;
+        this.createTime = createTime;
     }
 
     public Long getOrderNo() {
@@ -102,36 +87,11 @@ public class OrderItem {
         this.totalPrice = totalPrice;
     }
 
-    public Date getCreateTime() {
+    public String getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(Date createTime) {
+    public void setCreateTime(String createTime) {
         this.createTime = createTime;
-    }
-
-    public Date getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(Date updateTime) {
-        this.updateTime = updateTime;
-    }
-
-    public OrderItem() {
-    }
-
-    public OrderItem(Integer id, Integer userId, Long orderNo, Integer productId, String productName, String productImage, BigDecimal currentUnitPrice, Integer quantity, BigDecimal totalPrice, Date createTime, Date updateTime) {
-        this.id = id;
-        this.userId = userId;
-        this.orderNo = orderNo;
-        this.productId = productId;
-        this.productName = productName;
-        this.productImage = productImage;
-        this.currentUnitPrice = currentUnitPrice;
-        this.quantity = quantity;
-        this.totalPrice = totalPrice;
-        this.createTime = createTime;
-        this.updateTime = updateTime;
     }
 }

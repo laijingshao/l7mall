@@ -39,8 +39,11 @@
         select <include refid="Base_Column_List"/> from l7mall_shipping
         where user_id=#{userId} and id = #{shippingId}
     </select>
-    <select id="selectById" parameterType="int" resultMap="resultMap">
+    <select id="selectByUserId" parameterType="int" resultMap="resultMap">
         select <include refid="Base_Column_List"/> from l7mall_shipping where user_id=#{userId} 
+    </select>
+    <select id="selectById" parameterType="int" resultMap="resultMap">
+        select <include refid="Base_Column_List"/> from l7mall_shipping where id=#{shippingId} 
     </select>
     
 </mapper>

@@ -24,6 +24,17 @@
         select <include refid="Base_Column_List"></include>
         from l7mall_order_item where user_id=#{userId} and order_no=#{orderNo}
     </select>
-    
-    
+    <insert id="batchInsert" parameterType="list">
+        insert into l7mall_order_item values 
+        <foreach collection="orderItems" index="index" item="item" separator=",">
+            (
+            #{item.id},#{item.userId},#{item.orderNo},#{item.productId},#{item.productName},#{item.productImage},
+            #{item.currentUnitPrice},#{item.quantity},#{item.totalPrice},now(),now()
+            )
+        </foreach>      
+    </insert>
+    <select id="selectByOrderNo" parameterType="long" resultMap="resultMap">
+        select <include refid="Base_Column_List"></include>
+        from l7mall_order_item where order_no=#{orderNo}
+    </select>
 </mapper>

@@ -20,4 +20,6 @@ public interface CartDao {
     public int deleteByUserIdAndProductIds(@Param("userId") Integer userId, @Param("productIds") List<String> productIds);
     public int updateCheckedByUserId(@Param("userId") Integer userId, @Param("productId")Integer productId,@Param("checked")Integer checked);
     public int getCartProductCount(@Param("userId") Integer userId);
+    public List<Cart> selectCartCheckedByUserId(Integer userId);
+    public int deleteById(Integer id);
 }

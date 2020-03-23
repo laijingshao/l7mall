@@ -76,5 +76,17 @@
         </set>
         where id = #{id}
     </update>
-    
+    <insert id="insert" parameterType="Order" useGeneratedKeys="true" keyProperty="id">
+        insert into l7mall_order values(#{id},#{orderNo},#{userId},#{shippingId},#{payment},#{paymentType},#{postage},#{status},#{paymentTime},#{sendTime},#{endTime},#{closeTime},now(),now())
+    </insert>
+    <delete id="deleteByOrderNo" parameterType="long">
+        delete from l7mall_order where order_no = #{orderNo}
+    </delete>
+    <select id="selectOrderByUserId" parameterType="int" resultMap="resultMap">
+        select <include refid="Base_Column_List"></include> 
+        from l7mall_order where user_id = #{userId}
+    </select>
+    <select id="selectAll" resultMap="resultMap">
+        select <include refid="Base_Column_List"></include> from l7mall_order
+    </select>
 </mapper>

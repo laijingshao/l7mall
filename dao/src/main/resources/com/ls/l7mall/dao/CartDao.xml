@@ -72,4 +72,14 @@
     <select id="getCartProductCount" parameterType="int" resultType="int">
         select IFNULL(sum(quantity),0) as count from l7mall_cart where user_id = #{userId}
     </select>
+    <select id="selectCartCheckedByUserId" parameterType="int" resultMap="resultMap">
+        select <include refid="Base_Column_List"/>
+        from l7mall_cart where user_id = #{userId} and checked = 1
+    </select>
+    <delete id="deleteById" parameterType="int">
+        delete from l7mall_cart where id = #{id}
+    </delete>
+    
+    
+    
 </mapper>

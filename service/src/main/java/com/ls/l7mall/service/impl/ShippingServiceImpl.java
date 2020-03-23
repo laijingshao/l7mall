@@ -73,7 +73,7 @@ public class ShippingServiceImpl implements ShippingService {
     // list.do业务代码
     public ResponseEntity<PageInfo> listShipping(Integer userId,Integer pageNum,Integer pageSize){
         PageHelper.startPage(pageNum,pageSize);
-        List<Shipping> shippings = shippingDao.selectById(userId);
+        List<Shipping> shippings = shippingDao.selectByUserId(userId);
         PageInfo pageInfo = new PageInfo(shippings);
         return ResponseEntity.responesWhenSuccess("获取地址详情成功",pageInfo);
     }

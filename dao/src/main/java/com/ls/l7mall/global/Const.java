@@ -1,5 +1,6 @@
 package com.ls.l7mall.global;
 
+import com.alipay.api.domain.LoanRepayPlanTerm;
 import com.google.common.collect.Sets;
 
 import java.util.Set;
@@ -80,6 +81,16 @@ public class Const {
         public String getValue() {
             return value;
         }
+        
+        // 提供一个方法，根据code获取订单状态
+        public static OrderStatus codeOf(Integer code){
+            for (OrderStatus orderStatus : values()) {
+                if(orderStatus.getCode() == code){
+                    return orderStatus;
+                }
+            }
+            throw new RuntimeException("没有相应的订单状态"); 
+        }
     }
     
     // 交易状态(用于和支付宝回调的交易状态比较，从支付宝文档中获取)
@@ -116,5 +127,39 @@ public class Const {
         String RESPONSE_SUCCESS = "success";
         String RESPONSE_FAILED = "failed";
     }
+    
+    // 交易类型
+    public enum PaymentType{
+        ONLINE_PAY(1,"在线支付");
+        
+        public Integer getCode() {
+            return code;
+        }
+
+        public String getValue() {
+            return value;
+        }
+
+        PaymentType(Integer code, String value) {
+            this.code = code;
+            this.value = value;
+        }
+
+        private Integer code;
+        private String value;
+        
+        // 提供一个方法，根据code获取交易类型
+        public static PaymentType codeOf(int code){
+            for(PaymentType paymentType : values()){
+                if(paymentType.getCode() == code){
+                    return paymentType;
+                }
+            }
+            throw new RuntimeException("没有相应的交易类型");
+        }
+        
+    }
+    
+    
     
 }

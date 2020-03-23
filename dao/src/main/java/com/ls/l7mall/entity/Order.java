@@ -23,6 +23,16 @@ public class Order {
     private Date createTime;
     private Date updateTime;
 
+    public Order(Long orderNo, Integer userId, Integer shippingId, BigDecimal payment, Integer paymentType, Integer postage, Integer status) {
+        this.orderNo = orderNo;
+        this.userId = userId;
+        this.shippingId = shippingId;
+        this.payment = payment;
+        this.paymentType = paymentType;
+        this.postage = postage;
+        this.status = status;
+    }
+
     public Integer getId() {
         return id;
     }
@@ -133,6 +143,11 @@ public class Order {
 
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
+    }
+
+    public Order(Integer id, Integer status) {
+        this.id = id;
+        this.status = status;
     }
 
     public Order() {

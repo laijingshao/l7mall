@@ -11,4 +11,6 @@ import java.util.List;
  */
 public interface OrderItemDao {
     public List<OrderItem> selectByUserIdAndOrderNo(@Param("userId") Integer userId, @Param("orderNo") Long orderNo);
+    public void batchInsert(@Param("orderItems") List<OrderItem> orderItems);
+    public List<OrderItem> selectByOrderNo( @Param("orderNo") Long orderNo);
 }

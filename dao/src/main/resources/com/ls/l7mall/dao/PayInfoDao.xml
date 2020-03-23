@@ -17,8 +17,8 @@
         id,user_id,order_no,pay_platform,platform_number,platform_status,create_time,update_time
     </sql>
     
-    <insert id="insert" parameterType="PayInfo" useGeneratedKeys="true">
-        insert into l7mall_pay_info values(#{id},#{user_id},#{order_no},#{pay_platform},#{platform_number},#{platform_status},now(),now());
+    <insert id="insert" parameterType="PayInfo">
+        insert into l7mall_pay_info values(#{id},#{userId},#{orderNo},#{payPlatform},#{platformNumber},#{platformStatus},now(),now());
     </insert>
 
 
